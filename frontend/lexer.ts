@@ -51,7 +51,7 @@ export function tokenize(input: string): Token[] {
         else if (src[0] === ')') {
             tokens.push(token(src.shift(), TokenType.CloseParen));
         }
-        else if (src[0] === '+' || src[0] === '-' || src[0] === '*' || src[0] === '/') {
+        else if (src[0] === '+' || src[0] === '-' || src[0] === '*' || src[0] === '/' || src[0] === '%') {
             tokens.push(token(src.shift(), TokenType.BinaryOperator));
         }
         else if (src[0] === '=') {
@@ -91,8 +91,8 @@ export function tokenize(input: string): Token[] {
 
 }
 
-const input = await Deno.readTextFile('./test.txt');
+// const input = await Deno.readTextFile('./test.txt');
 
-for (const token of tokenize(input)) {
-    console.log(token);
-}
+// for (const token of tokenize(input)) {
+//     console.log(token);
+// }
