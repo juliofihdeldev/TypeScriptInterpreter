@@ -13,10 +13,7 @@ function repl() {
         }
         const program = parser.productAST(input);
         console.log(program)
-
-
         const result = evaluate(program);
-
         console.log(result)
     }
 }
