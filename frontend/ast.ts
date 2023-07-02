@@ -3,7 +3,8 @@
 export type NodeType = 'Program'
     | 'NumericLiteral'
     | 'BinaryExpr'
-    | 'Identifier';
+    | 'Identifier'
+    | 'NullLiteral'
 
 // rules statement is not expression
 export interface Statement {
@@ -32,4 +33,9 @@ export interface Identifier extends Expr {
 export interface NumericLiteral extends Expr {
     kind: 'NumericLiteral';
     value: number;
+}
+
+export interface NullLiteral extends Expr {
+    kind: 'NullLiteral';
+    value: "null";
 }

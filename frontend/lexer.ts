@@ -2,6 +2,7 @@
 // Lexer is a function that takes a string and returns an array of tokens
 // tokens are objects that have a type and a value
 export enum TokenType {
+    Null,
     Number,
     Identifier,
     Equals,
@@ -9,10 +10,11 @@ export enum TokenType {
     CloseParen,
     BinaryOperator,
     Let,
-    OEF
+    OEF,
 }
 const KEYWORDS: Record<string, TokenType> = {
-    'let': TokenType.Let
+    'let': TokenType.Let,
+    null: TokenType.Null
 }
 
 export interface Token {
@@ -73,10 +75,10 @@ export function tokenize(input: string): Token[] {
                 // check if id is a keyword
                 const reserved = KEYWORDS[id];
 
-                if (reserved == undefined) {
-                    tokens.push(token(id, TokenType.Identifier));
-                } else {
+                if (typeof reserved == 'number') {
                     tokens.push(token(id, reserved));
+                } else {
+                    tokens.push(token(id, TokenType.Identifier));
                 }
             } else if (isSkippable(src[0])) {
                 src.shift(); // skip the current character
