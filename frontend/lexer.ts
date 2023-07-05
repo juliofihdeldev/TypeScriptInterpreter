@@ -2,7 +2,7 @@
 // Lexer is a function that takes a string and returns an array of tokens
 // tokens are objects that have a type and a value
 export enum TokenType {
-    Null,
+
     Number,
     Identifier,
     Equals,
@@ -14,7 +14,6 @@ export enum TokenType {
 }
 const KEYWORDS: Record<string, TokenType> = {
     'let': TokenType.Let,
-    null: TokenType.Null
 }
 
 export interface Token {

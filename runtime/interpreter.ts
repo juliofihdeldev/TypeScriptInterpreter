@@ -1,16 +1,14 @@
-import { RuntimeVal, NumberVal, NullVal, } from "./value.ts";
+import { RuntimeVal, NumberVal, MK_NULL } from "./value.ts";
 
 
-import { Statement, NumericLiteral, BinaryExpr, Program } from "../frontend/ast.ts";
+import { Statement, NumericLiteral, BinaryExpr, Program, Identifier } from "../frontend/ast.ts";
+import Environment from "./enviroment.ts";
 
-function eval_program(program: Program): RuntimeVal {
-    let lastEvaluated: RuntimeVal = {
-        value: "null",
-        type: "null"
-    } as NullVal
+function eval_program(program: Program, env: Environment): RuntimeVal {
+    let lastEvaluated: RuntimeVal = MK_NULL()
 
     for (const statement of program.body) {
-        lastEvaluated = evaluate(statement);
+        lastEvaluated = evaluate(statement, env);
     }
 
     return lastEvaluated
@@ -36,20 +34,22 @@ function eval_numeric_expr(lhs: NumberVal, rhs: NumberVal, operator: string): Nu
     return { value: result, type: "number" };
 }
 
-function eval_binary_expression(binop: BinaryExpr): RuntimeVal {
+function eval_binary_expression(binop: BinaryExpr, env: Environment): RuntimeVal {
 
-    const lhs = evaluate(binop.left);
-    const rhs = evaluate(binop.right);
+    const lhs = evaluate(binop.left, env);
+    const rhs = evaluate(binop.right, env);
     if (lhs.type == "number" && rhs.type == "number") {
         return eval_numeric_expr(lhs as NumberVal, rhs as NumberVal, binop.operator as string)
     }
-    return {
-        value: "null",
-        type: "null"
-    } as NullVal
+    return MK_NULL()
 }
 
-export function evaluate(astNode: Statement): RuntimeVal {
+
+function eval_identifier(identifier: Identifier, env: Environment): RuntimeVal {
+    return env.lookupVar(identifier.symbol);
+}
+
+export function evaluate(astNode: Statement, env: Environment): RuntimeVal {
     switch (astNode.kind) {
         case "NumericLiteral":
             return {
@@ -57,17 +57,14 @@ export function evaluate(astNode: Statement): RuntimeVal {
                 type: "number"
             } as NumberVal
 
-        case "NullLiteral":
-            return {
-                value: "null",
-                type: "null"
-            } as NullVal
-
         case "BinaryExpr":
-            return eval_binary_expression(astNode as BinaryExpr);
+            return eval_binary_expression(astNode as BinaryExpr, env);
 
         case "Program":
-            return eval_program(astNode as Program)
+            return eval_program(astNode as Program, env)
+
+        case "Identifier":
+            return eval_identifier(astNode as Identifier, env)
 
         default:
             console.error("Error: this AstNode is not supported yet!")
